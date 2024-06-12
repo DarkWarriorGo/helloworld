@@ -1,21 +1,29 @@
-name: Generate GHAS Metrics Report
-
+name: "Regression Testing using local provided PAT"
 on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+  workflow_dispatch:
 
 jobs:
-  generate_report:
-    runs-on: ubuntu-latest
+  regression-local-pat:
+    name: Regression Testing with local PAT
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Generate GHAS Metrics Report
-        uses: theztefan/ghas-metric-report@v1  # Ensure the correct version is specified
+      - name: Git Checkout
+        uses: actions/checkout@v4
+        with:
+          path: ghas-metrics-report
+      - name: Test Action
+        uses: ./ghas-metrics-report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_USING_ACT: "true"
         with:
-          repo: "hello-world"
-          org: "DarkWarriorGO"
-          features: "dependabot, code-scanning, secret-scanning" # comma-separated list of features
-          frequency:  "daily"
+          repo: "helloworld"
+          org: "DarkWarriorGo"
+          features: "dependabot, code-scanning, secret-scanning"
+          frequency: "daily"
+          output-format: "json, pdf, issues"
+      # - name: upload GHAS metrics report
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ghas-metrics-report
+      #     path: ghas-metrics-report/dist/report.json
