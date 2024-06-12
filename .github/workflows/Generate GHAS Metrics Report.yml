@@ -1,0 +1,21 @@
+name: Generate GHAS Metrics Report
+
+on:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  generate_report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Generate GHAS Metrics Report
+        uses: theztefan/ghas-metric-report@v1  # Ensure the correct version is specified
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          repo: "hello-world"
+          org: "DarkWarriorGO"
+          features: "dependabot, code-scanning, secret-scanning" # comma-separated list of features
+          frequency:  "daily"
